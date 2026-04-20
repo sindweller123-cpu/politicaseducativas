@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Políticas Educativas en América Latina - Mapa Conceptual</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-1: #0f172a;
+    --bg-2: #1e293b;
+    --accent: #38bdf8;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --c1: #3b82f6; /* azul - contexto */
+    --c2: #ef4444; /* rojo - organismos */
+    --c3: #10b981; /* verde - influencias */
+    --c4: #f59e0b; /* ámbar - agenda */
+    --c5: #8b5cf6; /* morado - desafíos */
+  }
+
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background: radial-gradient(ellipse at top, #1e3a8a 0%, #0f172a 50%, #020617 100%);
+    min-height: 100vh;
+    color: var(--text);
+    overflow-x: hidden;
+    padding: 2rem 1rem;
+  }
+
+  /* === HEADER === */
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    animation: fadeInDown 0.8s ease-out;
+  }
+  .header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.8rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #38bdf8 0%, #a78bfa 50%, #f472b6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+  .header .subtitle {
+    font-size: clamp(0.9rem, 2vw, 1.15rem);
+    color: var(--text-muted);
+    font-style: italic;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .header .hint {
+    margin-top: 1.2rem;
+    font-size: 0.85rem;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  /* === CONTENEDOR PRINCIPAL === */
+  .map-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 1.5rem;
+    grid-template-areas:
+      "rama1 central rama2"
+      "rama3 desafios rama4"
+      "rama5 rama5 rama5";
+  }
+
+  @media (max-width: 900px) {
+    .map-container {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "central"
+        "rama1"
+        "rama2"
+        "rama3"
+        "rama4"
+        "desafios"
+        "rama5";
+    }
+  }
+
+  /* === NODO CENTRAL === */
+  .central-node {
+    grid-area: central;
+    background: linear-gradient(135deg, #1e40af 0%, #312e81 100%);
+    border-radius: 24px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.4),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+    border: 2px solid rgba(56, 189, 248, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 220px;
+    position: relative;
+    animation: pulse-glow 3s ease-in-out infinite, fadeIn 0.8s ease-out;
+  }
+  .central-node::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 28px;
+    padding: 2px;
+    background: linear-gradient(135deg, #38bdf8, #a78bfa, #f472b6);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.6;
+    animation: rotate-border 8s linear infinite;
+  }
+  .central-node .icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
+    filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
+  }
+  .central-node h2 {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+  }
+
+  /* === TARJETAS DE RAMA === */
+  .branch {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 18px;
+    padding: 1.3rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    animation: fadeInUp 0.6s ease-out backwards;
+    position: relative;
+    overflow: hidden;
+  }
+  .branch::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--branch-color);
+  }
+  .branch:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: var(--branch-color);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5),
+                0 0 0 1px var(--branch-color),
+                0 0 30px rgba(var(--branch-rgb), 0.3);
+  }
+  .branch:nth-child(2) { animation-delay: 0.1s; }
+  .branch:nth-child(3) { animation-delay: 0.2s; }
+  .branch:nth-child(4) { animation-delay: 0.3s; }
+  .branch:nth-child(5) { animation-delay: 0.4s; }
+
+  .branch-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+  .branch-number {
+    width: 36px; height: 36px;
+    border-radius: 12px;
+    background: var(--branch-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(var(--branch-rgb), 0.4);
+  }
+  .branch-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.3;
+  }
+  .branch-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .branch-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+  .branch.expanded .branch-content {
+    max-height: 600px;
+  }
+
+  .sub-item {
+    background: rgba(255, 255, 255, 0.04);
+    border-left: 3px solid var(--branch-color);
+    padding: 0.7rem 0.9rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    font-size: 0.82rem;
+    color: var(--text);
+    transition: all 0.2s ease;
+  }
+  .sub-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(4px);
+  }
+  .sub-item strong {
+    color: var(--branch-color);
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+
+  /* Preview visible cuando no está expandido */
+  .branch-preview {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .branch.expanded .branch-preview { display: none; }
+
+  .branch-toggle {
+    margin-top: 0.8rem;
+    font-size: 0.75rem;
+    color: var(--branch-color);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .branch-toggle::after {
+    content: '▼';
+    font-size: 0.65rem;
+    transition: transform 0.3s ease;
+  }
+  .branch.expanded .branch-toggle::after {
+    transform: rotate(180deg);
+  }
+  .branch.expanded .branch-toggle span::before { content: 'Ocultar detalles'; }
+  .branch:not(.expanded) .branch-toggle span::before { content: 'Ver detalles'; }
+
+  /* === COLORES POR RAMA === */
+  .rama-1 { grid-area: rama1; --branch-color: var(--c1); --branch-rgb: 59,130,246; }
+  .rama-2 { grid-area: rama2; --branch-color: var(--c2); --branch-rgb: 239,68,68; }
+  .rama-3 { grid-area: rama3; --branch-color: var(--c3); --branch-rgb: 16,185,129; }
+  .rama-4 { grid-area: rama4; --branch-color: var(--c4); --branch-rgb: 245,158,11; }
+  .rama-desafios { grid-area: desafios; --branch-color: var(--c5); --branch-rgb: 139,92,246; }
+
+  /* === FOOTER RAMA 5 (nota fuente) === */
+  .footer-note {
+    grid-area: rama5;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-style: italic;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 1rem;
+  }
+  .footer-note strong {
+    color: var(--text);
+    font-style: normal;
+  }
+
+  /* === ANIMACIONES === */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 20px 60px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
+    50% { box-shadow: 0 25px 80px rgba(139, 92, 246, 0.5), inset 0 1px 0 rgba(255,255,255,0.2); }
+  }
+  @keyframes rotate-border {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg-2); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 5px; }
+
+  /* Botón expandir todo */
+  .controls {
+    text-align: center;
+    margin: 1rem 0 2rem;
+  }
+  .btn-toggle-all {
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: var(--accent);
+    padding: 0.6rem 1.4rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .btn-toggle-all:hover {
+    background: rgba(56, 189, 248, 0.25);
+    transform: translateY(-2px);
+  }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Políticas Educativas en América Latina</h1>
+    <p class="subtitle">La injerencia de los organismos internacionales en las políticas públicas educativas</p>
+    <p class="hint">✨ Haz clic en cada rama para explorar su contenido</p>
+  </div>
+
+  <div class="controls">
+    <button class="btn-toggle-all" onclick="toggleAll()">Expandir / Colapsar todo</button>
+  </div>
+
+  <div class="map-container">
+
+    <!-- RAMA 1: CONTEXTO HISTÓRICO -->
+    <div class="branch rama-1" onclick="toggleBranch(this)">
+      <div class="branch-header">
+        <div class="branch-number">1</div>
+        <div>
+          <div class="branch-title">Contexto Histórico</div>
+          <div class="branch-subtitle">y conceptual</div>
+        </div>
+      </div>
+      <div class="branch-preview">
+        Evolución de la educación como política pública: del modelo economicista hacia la sustentabilidad.
+      </div>
+      <div class="branch-content">
+        <div class="sub-item">
+          <strong>Educación como política pública</strong>
+          Decisiones del Estado para orientar los sistemas educativos y fomentar el ejercicio ciudadano (Aguilar et al., 2018).
+        </div>
+        <div class="sub-item">
+          <strong>Fin del siglo XX</strong>
+          Modelo economicista y neoliberal promovido por la globalización.
+        </div>
+        <div class="sub-item">
+          <strong>Siglo XXI</strong>
+          Transición hacia la educación para el desarrollo sostenible.
+        </div>
+      </div>
+      <div class="branch-toggle"><span></span></div>
+    </div>
+
+    <!-- NODO CENTRAL -->
+    <div class="central-node">
+      <div class="icon">🌎</div>
+      <h2>POLÍTICAS EDUCATIVAS<br>EN AMÉRICA LATINA</h2>
+    </div>
+
+    <!-- RAMA 2: ORGANISMOS INTERNACIONALES -->
+    <div class="branch rama-2" onclick="toggleBranch(this)">
+      <div class="branch-header">
+        <div class="branch-number">2</div>
+        <div>
+          <div class="branch-title">Organismos Internacionales</div>
+          <div class="branch-subtitle">actores globales</div>
+        </div>
+      </div>
+      <div class="branch-preview">
+        Instituciones que marcan la agenda, el financiamiento y los estándares educativos de la región.
+      </div>
+      <div class="branch-content">
+        <div class="sub-item"><strong>UNESCO</strong>Educación para Todos, calidad educativa y enfoque de derechos.</div>
+        <div class="sub-item"><strong>Banco Mundial</strong>Principal fuente de financiamiento y reformas estructurales.</div>
+        <div class="sub-item"><strong>BID</strong>Banco Interamericano de Desarrollo: crecimiento regional.</div>
+        <div class="sub-item"><strong>OCDE</strong>Estándares, competencias y evaluaciones como PISA.</div>
+        <div class="sub-item"><strong>UNICEF</strong>Derechos de la niñez y la adolescencia.</div>
+        <div class="sub-item"><strong>CEPAL / OEI / ONU</strong>Cooperación regional e iberoamericana.</div>
+      </div>
+      <div class="branch-toggle"><span></span></div>
+    </div>
+
+    <!-- RAMA 3: INFLUENCIAS Y TRANSFORMACIONES -->
+    <div class="branch rama-3" onclick="toggleBranch(this)">
+      <div class="branch-header">
+        <div class="branch-number">3</div>
+        <div>
+          <div class="branch-title">Influencias y Transformaciones</div>
+          <div class="branch-subtitle">en las políticas nacionales</div>
+        </div>
+      </div>
+      <div class="branch-preview">
+        Cómo las directrices globales se han traducido en reformas concretas en los países de la región.
+      </div>
+      <div class="branch-content">
+        <div class="sub-item"><strong>Reformas neoliberales</strong>Descentralización administrativa y apertura a la privatización.</div>
+        <div class="sub-item"><strong>Evaluaciones estandarizadas</strong>PISA, TERCE y ERCE como referentes de medición.</div>
+        <div class="sub-item"><strong>Tensión cobertura vs. calidad</strong>Expansión del acceso sin garantía de calidad.</div>
+        <div class="sub-item"><strong>Inclusión y equidad</strong>Nuevo eje desde inicios del siglo XXI.</div>
+      </div>
+      <div class="branch-toggle"><span></span></div>
+    </div>
+
+    <!-- RAMA DESAFÍOS (centro inferior) -->
+    <div class="branch rama-desafios" onclick="toggleBranch(this)">
+      <div class="branch-header">
+        <div class="branch-number">5</div>
+        <div>
+          <div class="branch-title">Desafíos Pendientes</div>
+          <div class="branch-subtitle">retos de la región</div>
+        </div>
+      </div>
+      <div class="branch-preview">
+        Problemáticas estructurales que América Latina aún debe superar en materia educativa.
+      </div>
+      <div class="branch-content">
+        <div class="sub-item"><strong>Desigualdad educativa</strong>Brechas entre zonas urbanas y rurales.</div>
+        <div class="sub-item"><strong>Brechas digitales</strong>Evidenciadas con fuerza tras la pandemia.</div>
+        <div class="sub-item"><strong>Financiamiento limitado</strong>Presupuestos insuficientes y dependencia externa.</div>
+        <div class="sub-item"><strong>Pertinencia cultural</strong>Modelos alejados de las realidades locales.</div>
+        <div class="sub-item"><strong>Formación docente</strong>Debilidades en la profesionalización.</div>
+        <div class="sub-item"><strong>Visión mercantilista</strong>Urge superarla para lograr justicia social.</div>
+      </div>
+      <div class="branch-toggle"><span></span></div>
+    </div>
+
+    <!-- RAMA 4: AGENDA EDUCATIVA ACTUAL -->
+    <div class="branch rama-4" onclick="toggleBranch(this)">
+      <div class="branch-header">
+        <div class="branch-number">4</div>
+        <div>
+          <div class="branch-title">Agenda Educativa Actual</div>
+          <div class="branch-subtitle">compromisos globales</div>
+        </div>
+      </div>
+      <div class="branch-preview">
+        Marcos internacionales que orientan hoy la política educativa en la región latinoamericana.
+      </div>
+      <div class="branch-content">
+        <div class="sub-item"><strong>ODS 4 – Educación de Calidad</strong>Educación inclusiva, equitativa y de calidad (ONU, 2015).</div>
+        <div class="sub-item"><strong>Agenda 2030</strong>Compromisos globales para el desarrollo sostenible.</div>
+        <div class="sub-item"><strong>Jomtien 1990</strong>Conferencia Mundial sobre Educación para Todos.</div>
+        <div class="sub-item"><strong>Educación para el desarrollo sostenible</strong>Horizonte articulador con responsabilidad social y ambiental.</div>
+      </div>
+      <div class="branch-toggle"><span></span></div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-note">
+      <strong>Fuente:</strong> Elaboración propia con base en Mejía González, Cujia Berrío y Liñán Cuello (2022) y Forero Hernández y Castro Campos (2022).
+    </div>
+
+  </div>
+
+<script>
+  function toggleBranch(el) {
+    el.classList.toggle('expanded');
+  }
+
+  function toggleAll() {
+    const branches = document.querySelectorAll('.branch');
+    const anyCollapsed = Array.from(branches).some(b => !b.classList.contains('expanded'));
+    branches.forEach(b => {
+      if (anyCollapsed) b.classList.add('expanded');
+      else b.classList.remove('expanded');
+    });
+  }
+
+  // Abrir la primera rama al cargar para mostrar cómo funciona
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.querySelector('.rama-1').classList.add('expanded');
+    }, 1000);
+  });
+</script>
+
+</body>
+</html>
